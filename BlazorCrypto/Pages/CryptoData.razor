@@ -1,0 +1,69 @@
+﻿@page "/crypto"
+
+@inject IHttpClientFactory _clientFactory
+
+<h3>Crypto Data</h3>
+
+@if (string.IsNullOrEmpty(errorString) == false)
+{
+<div class="h2">@errorString</div> }
+else if (info is null)
+{
+<div class="h4">Loading...</div> }
+else
+{
+<table class="table table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>Coin</th>
+            <th>Symbol</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in info.Coins)
+        {
+<tr>
+    <td>@item.id</td>
+    <td>@item.name</td>
+    <td>@item.symbol</td>
+</tr>
+}
+
+    </tbody>
+</table>}
+
+@code { CryptoInfoModel.Rootobject info;
+    string errorString;
+
+    protected override async Task OnInitializedAsync()
+    {@*var request = new HttpRequestMessage(HttpMethod.Get,
+                       "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_market_cap=true");
+            https://api.coingecko.com/api/v3/simple/price?ids=bitcoin%2Cethereum&vs_currencies=usd&include_market_cap=true
+               var client = _clientFactory.CreateClient();
+
+               HttpResponseMessage response = await client.SendAsync(request);
+
+               if (response.IsSuccessStatusCode)
+               {
+                   info = await response.Content.ReadFromJsonAsync<CryptoInfoModel>();
+                   errorString = null;
+               }
+               else
+               {
+                   errorString = $"There was an error getting our crypto data: { response.ReasonPhrase }";
+               }*@var client = _clientFactory.CreateClient();
+
+    try
+    {
+        info = await client.GetFromJsonAsync<CryptoInfoModel.Rootobject>("https://api.coingecko.com/api/v3/coins/list?include_platform=false");
+        errorString = null;
+    }
+    catch (Exception ex)
+    {
+
+        errorString = $"There was an error getting our crypto data: { ex.Message }";
+    }
+}
+
+}
