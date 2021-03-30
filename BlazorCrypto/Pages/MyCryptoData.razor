@@ -1,0 +1,59 @@
+﻿@page "/mycryptos"
+
+@inject IHttpClientFactory _clientFactory
+
+<h3>Coin Data</h3>
+
+@if (string.IsNullOrWhiteSpace(errorString) == false)
+{
+<div class="h2">@errorString</div> }
+else if (cryptoCoins is null)
+{
+<div class="h4">Loading...</div> }
+else
+{
+<table class="table table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Rank</th>
+            <th>Coin</th>
+            <th>Price</th>
+            <th>Market Cap</th>
+            <th>ATH</th>
+            <th>Last Updated</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (MyCoinModel coin in cryptoCoins)
+        {
+
+<tr>
+    <td>@coin.market_cap_rank</td>
+    <td>@coin.name.</td>
+    <td>@coin.current_price.ToString("C")</td>
+    <td>@coin.market_cap.ToString("C")</td>
+    <td>@coin.ath.ToString("C")</td>
+    <td>@coin.last_updated.ToLocalTime()</td>
+
+</tr>
+}
+    </tbody>
+</table>}
+
+@code { private MyCoinModel[] cryptoCoins;
+    string errorString;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var client = _clientFactory.CreateClient();
+
+        try
+        {
+            cryptoCoins = await client.GetFromJsonAsync<MyCoinModel[]>("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin%2Cethereum%2Caxion%2Cwaltonchain%2Cchainlink%2Ctrustswap&order=market_cap_desc&per_page=20&page=1&sparkline=false");
+        }
+        catch (Exception ex)
+        {
+            errorString = $"There was an error getting our crypto data: { ex.Message }";
+        }
+    } }
