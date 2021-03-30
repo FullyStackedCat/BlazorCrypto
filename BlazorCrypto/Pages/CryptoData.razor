@@ -15,25 +15,25 @@ else
 <table class="table table-striped">
     <thead class="thead-dark">
         <tr>
-            <th>ID</th>
-            <th>Coin</th>
+            <th>Id</th>
+            <th>Name</th>
             <th>Symbol</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in info.Coins)
+        @foreach (CoinModel coin in info)
         {
 <tr>
-    <td>@item.id</td>
-    <td>@item.name</td>
-    <td>@item.symbol</td>
-</tr>
-}
+    <td>@coin.id</td>
+    <td>@coin.name</td>
+    <td>@coin.symbol</td>
+</tr>}
+
 
     </tbody>
 </table>}
 
-@code { CryptoInfoModel.Rootobject info;
+@code { private CoinModel[] info;
     string errorString;
 
     protected override async Task OnInitializedAsync()
@@ -56,7 +56,7 @@ else
 
     try
     {
-        info = await client.GetFromJsonAsync<CryptoInfoModel.Rootobject>("https://api.coingecko.com/api/v3/coins/list?include_platform=false");
+        info = await client.GetFromJsonAsync<CoinModel[]>("https://api.coingecko.com/api/v3/coins/list?include_platform=false");
         errorString = null;
     }
     catch (Exception ex)
