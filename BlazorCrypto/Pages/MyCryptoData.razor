@@ -1,4 +1,4 @@
-﻿@page "/mycryptos"
+﻿@page "/myportfolio"
 
 @inject IHttpClientFactory _clientFactory
 
@@ -19,8 +19,11 @@ else
             <th>Coin</th>
             <th>Price</th>
             <th>Market Cap</th>
-            <th>ATH</th>
+            <th>24hr Low</th>
+            <th>24hr High</th>
             <th>Last Updated</th>
+            <th>ATH</th>
+            <th>ATH Date</th>
         </tr>
     </thead>
     <tbody>
@@ -33,8 +36,11 @@ else
     <td>@coin.name.</td>
     <td>@coin.current_price.ToString("C")</td>
     <td>@coin.market_cap.ToString("C")</td>
-    <td>@coin.ath.ToString("C")</td>
+    <td>@coin.low_24h.ToString("C")</td>
+    <td>@coin.high_24h.ToString("C")</td>
     <td>@coin.last_updated.ToLocalTime()</td>
+    <td>@coin.ath.ToString("C")</td>
+    <td>@coin.ath_date.ToShortDateString()</td>
 
 </tr>
 }
